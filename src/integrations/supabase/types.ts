@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      wishes: {
+        Row: {
+          animation: string
+          bg_image: string | null
+          created_at: string
+          festival: string
+          font: string
+          from: string
+          id: string
+          message: string
+          music: string | null
+          short_id: string
+          text_color: string | null
+          to: string | null
+        }
+        Insert: {
+          animation: string
+          bg_image?: string | null
+          created_at?: string
+          festival: string
+          font: string
+          from: string
+          id?: string
+          message: string
+          music?: string | null
+          short_id: string
+          text_color?: string | null
+          to?: string | null
+        }
+        Update: {
+          animation?: string
+          bg_image?: string | null
+          created_at?: string
+          festival?: string
+          font?: string
+          from?: string
+          id?: string
+          message?: string
+          music?: string | null
+          short_id?: string
+          text_color?: string | null
+          to?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
