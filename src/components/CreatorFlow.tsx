@@ -10,7 +10,8 @@ import {
   timeOfDayGreeting,
   type FestivalId,
 } from "@/lib/festivals";
-import { encodeWish, PRESET_MUSIC, type WishData } from "@/lib/wish";
+import { saveWish, PRESET_MUSIC, type WishData } from "@/lib/wish";
+import { toast } from "sonner";
 import { WishStage } from "./WishStage";
 import { Button } from "@/components/ui/button";
 
@@ -42,10 +43,19 @@ export function CreatorFlow() {
   const back = () => setStep((s) => Math.max(s - 1, 0));
 
   const canNext = step === 0 ? data.from.trim().length > 0 : true;
+  const [generating, setGenerating] = useState(false);
 
-  const generate = () => {
-    const id = encodeWish(data);
-    navigate({ to: "/wish/$id", params: { id } });
+  const generate = async () => {
+    if (generating) return;
+    setGenerating(true);
+    try {
+      const id = await saveWish(data);
+      navigate({ to: "/wish/$id", params: { id } });
+    } catch (e) {
+      console.error(e);
+      toast.error("Couldn't generate your link. Please try again.");
+      setGenerating(false);
+    }
   };
 
   return (
@@ -125,9 +135,10 @@ export function CreatorFlow() {
           ) : (
             <Button
               onClick={generate}
+              disabled={generating}
               className="bg-gradient-to-r from-[oklch(0.85_0.18_80)] to-[oklch(0.7_0.22_55)] text-neutral-900 font-semibold hover:opacity-90 shadow-[var(--shadow-glow)]"
             >
-              <Sparkles className="mr-2 h-4 w-4" /> Generate Link
+              <Sparkles className="mr-2 h-4 w-4" /> {generating ? "Generating…" : "Generate Link"}
             </Button>
           )}
         </div>
