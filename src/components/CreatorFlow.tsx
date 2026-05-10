@@ -10,7 +10,8 @@ import {
   timeOfDayGreeting,
   type FestivalId,
 } from "@/lib/festivals";
-import { encodeWish, PRESET_MUSIC, type WishData } from "@/lib/wish";
+import { saveWish, PRESET_MUSIC, type WishData } from "@/lib/wish";
+import { toast } from "sonner";
 import { WishStage } from "./WishStage";
 import { Button } from "@/components/ui/button";
 
