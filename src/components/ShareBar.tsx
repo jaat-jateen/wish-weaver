@@ -5,12 +5,50 @@ import { Copy, Check, Share2 } from "lucide-react";
 export function ShareBar({ url, title }: { url: string; title: string }) {
   const [copied, setCopied] = useState(false);
 
+  const [error, setError] = useState(false);
+
   const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(url);
+    const showSuccess = () => {
       setCopied(true);
+      setError(false);
       setTimeout(() => setCopied(false), 2000);
-    } catch {}
+    };
+    const showError = () => {
+      setError(true);
+      setTimeout(() => setError(false), 2000);
+    };
+
+    // Try modern Clipboard API (requires secure context + permission)
+    if (typeof navigator !== "undefined" && navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(url);
+        showSuccess();
+        return;
+      } catch {
+        // fall through to legacy
+      }
+    }
+
+    // Legacy fallback — works in iframes / non-secure contexts
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = url;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.top = "0";
+      ta.style.left = "0";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, url.length);
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      if (ok) showSuccess();
+      else showError();
+    } catch {
+      showError();
+    }
   };
 
   const share = async () => {
