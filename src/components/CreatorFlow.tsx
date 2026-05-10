@@ -43,10 +43,19 @@ export function CreatorFlow() {
   const back = () => setStep((s) => Math.max(s - 1, 0));
 
   const canNext = step === 0 ? data.from.trim().length > 0 : true;
+  const [generating, setGenerating] = useState(false);
 
-  const generate = () => {
-    const id = encodeWish(data);
-    navigate({ to: "/wish/$id", params: { id } });
+  const generate = async () => {
+    if (generating) return;
+    setGenerating(true);
+    try {
+      const id = await saveWish(data);
+      navigate({ to: "/wish/$id", params: { id } });
+    } catch (e) {
+      console.error(e);
+      toast.error("Couldn't generate your link. Please try again.");
+      setGenerating(false);
+    }
   };
 
   return (
