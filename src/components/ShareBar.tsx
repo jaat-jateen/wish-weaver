@@ -83,7 +83,7 @@ export function ShareBar({ url, title }: { url: string; title: string }) {
         className="glass flex h-11 w-11 items-center justify-center rounded-full text-white/90 hover:scale-105 transition"
         aria-label="Copy link"
       >
-        {copied ? <Check className="h-4 w-4 text-[var(--gold)]" /> : <Copy className="h-4 w-4" />}
+        {copied ? <Check className="h-4 w-4 text-[var(--gold)]" /> : <Copy className={`h-4 w-4 ${error ? "text-red-400" : ""}`} />}
       </button>
       <button
         onClick={share}
