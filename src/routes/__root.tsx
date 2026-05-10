@@ -74,6 +74,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "WishYourFriends" },
       { name: "author", content: "WishYourFriends" },
+      { property: "og:title", content: "WishYourFriends" },
+      { name: "twitter:title", content: "WishYourFriends" },
+      { name: "description", content: "A personalized festival greeting platform where users create beautiful wish pages and share them on WhatsApp and the platform you use." },
+      { property: "og:description", content: "A personalized festival greeting platform where users create beautiful wish pages and share them on WhatsApp and the platform you use." },
+      { name: "twitter:description", content: "A personalized festival greeting platform where users create beautiful wish pages and share them on WhatsApp and the platform you use." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0a2fe432-ef4c-4e87-a93d-154cd4090fe7/id-preview-38f8d170--bc9d1307-3c62-4f4f-aa75-1ee3766502de.lovable.app-1778437882512.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0a2fe432-ef4c-4e87-a93d-154cd4090fe7/id-preview-38f8d170--bc9d1307-3c62-4f4f-aa75-1ee3766502de.lovable.app-1778437882512.png" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:type", content: "website" },
     ],
     links: [
       {
