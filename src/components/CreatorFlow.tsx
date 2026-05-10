@@ -135,9 +135,10 @@ export function CreatorFlow() {
           ) : (
             <Button
               onClick={generate}
+              disabled={generating}
               className="bg-gradient-to-r from-[oklch(0.85_0.18_80)] to-[oklch(0.7_0.22_55)] text-neutral-900 font-semibold hover:opacity-90 shadow-[var(--shadow-glow)]"
             >
-              <Sparkles className="mr-2 h-4 w-4" /> Generate Link
+              <Sparkles className="mr-2 h-4 w-4" /> {generating ? "Generating…" : "Generate Link"}
             </Button>
           )}
         </div>
