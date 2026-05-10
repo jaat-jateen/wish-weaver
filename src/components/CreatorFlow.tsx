@@ -334,7 +334,7 @@ function StepStyle({ data, set }: { data: WishData; set: <K extends keyof WishDa
 }
 
 function StepMusic({ data, set }: { data: WishData; set: <K extends keyof WishData>(k: K, v: WishData[K]) => void }) {
-  const presets = PRESET_MUSIC.filter((m) => m.festival === "all" || m.festival === data.festival || m.id === "");
+  const presets = PRESET_MUSIC.filter((m) => !m.id || m.festival === "all" || m.festival === data.festival);
   return (
     <div className="space-y-5">
       <div>
