@@ -37,7 +37,24 @@ export function CreatorFlow() {
     textColor: "light",
   });
 
-  const set = <K extends keyof WishData>(k: K, v: WishData[K]) => setData((d) => ({ ...d, [k]: v }));
+  const set = <K extends keyof WishData>(k: K, v: WishData[K]) =>
+    setData((d) => {
+      if (k === "festival") {
+        const fid = v as FestivalId;
+        const def = FESTIVALS[fid].defaultMessage;
+        // Replace message only if user hasn't customised it (still matches a default).
+        const isDefault =
+          d.message === `${tod}! Wishing you a beautiful day ahead. ✨` ||
+          Object.values(FESTIVALS).some((f) => f.defaultMessage && f.defaultMessage === d.message);
+        return {
+          ...d,
+          festival: fid,
+          message: def && isDefault ? def : d.message,
+          music: PRESET_MUSIC.find((m) => m.festival === fid)?.id ?? d.music,
+        };
+      }
+      return { ...d, [k]: v };
+    });
 
   const next = () => setStep((s) => Math.min(s + 1, STEPS.length - 1));
   const back = () => setStep((s) => Math.max(s - 1, 0));
