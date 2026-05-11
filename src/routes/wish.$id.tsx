@@ -7,62 +7,67 @@ import { ShareBar } from "@/components/ShareBar";
 import { MusicToggle } from "@/components/MusicToggle";
 import { FESTIVALS } from "@/lib/festivals";
 
+async function resolveWish(id: string): Promise<WishData | null> {
+  if (id === "diwali-sample") return SAMPLE_DIWALI;
+  const looksShort = /^[a-z0-9]{4,24}$/.test(id);
+  if (looksShort) {
+    const d = await loadWish(id);
+    if (d) return d;
+  }
+  return decodeWish(id);
+}
+
+function buildOg(data: WishData | null, id: string) {
+  if (!data) {
+    return {
+      title: "A wish for you ✨ — WishYourFriends",
+      description: "Open this personalized greeting on WishYourFriends.",
+    };
+  }
+  const fest = FESTIVALS[data.festival];
+  const greeting = `${fest.greeting} ${fest.emoji}`.trim();
+  const title = data.to
+    ? `${data.from} wishes ${data.to} — ${greeting}`
+    : `${data.from} sent you a wish — ${greeting}`;
+  const snippet = data.message.length > 120 ? `${data.message.slice(0, 117)}…` : data.message;
+  const description = data.to
+    ? `${data.from} to ${data.to}: "${snippet}" — created with WishYourFriends`
+    : `From ${data.from}: "${snippet}" — created with WishYourFriends`;
+  return { title, description, id };
+}
+
 export const Route = createFileRoute("/wish/$id")({
+  loader: async ({ params }) => {
+    const data = await resolveWish(params.id);
+    return { wish: data, id: params.id };
+  },
+  head: ({ loaderData }) => {
+    const { title, description } = buildOg(loaderData?.wish ?? null, loaderData?.id ?? "");
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        { name: "twitter:card", content: "summary_large_image" },
+        { property: "og:type", content: "website" },
+      ],
+    };
+  },
   component: WishPage,
 });
 
 function WishPage() {
-  const { id } = Route.useParams();
-  const [data, setData] = useState<WishData | null>(null);
-  const [status, setStatus] = useState<"loading" | "ready" | "missing">("loading");
+  const { wish } = Route.useLoaderData();
   const [url, setUrl] = useState("");
 
   useEffect(() => {
-    let cancelled = false;
     setUrl(window.location.href);
+  }, []);
 
-    async function run() {
-      if (id === "diwali-sample") {
-        setData(SAMPLE_DIWALI);
-        setStatus("ready");
-        return;
-      }
-      // Short IDs are short and lowercase alphanumerics; longer strings are
-      // legacy base64-encoded payloads from earlier links — keep them working.
-      const looksShort = /^[a-z0-9]{4,24}$/.test(id);
-      if (looksShort) {
-        const d = await loadWish(id);
-        if (cancelled) return;
-        if (d) {
-          setData(d);
-          setStatus("ready");
-          return;
-        }
-      }
-      const decoded = decodeWish(id);
-      if (cancelled) return;
-      if (decoded) {
-        setData(decoded);
-        setStatus("ready");
-      } else {
-        setStatus("missing");
-      }
-    }
-    run();
-    return () => {
-      cancelled = true;
-    };
-  }, [id]);
-
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-[var(--gold)]" />
-      </div>
-    );
-  }
-
-  if (status === "missing" || !data) {
+  if (!wish) {
     return (
       <div className="min-h-screen flex items-center justify-center text-center px-6">
         <div>
@@ -80,15 +85,15 @@ function WishPage() {
     );
   }
 
-  const title = `${FESTIVALS[data.festival].greeting} from ${data.from}`;
-  const musicSrc = data.music ? `/music/${data.music}.mp3` : undefined;
+  const title = `${FESTIVALS[wish.festival].greeting} from ${wish.from}`;
+  const musicSrc = wish.music ? `/music/${wish.music}.mp3` : undefined;
 
   return (
     <>
-      <WishStage data={data} />
-      <MusicToggle src={musicSrc} autoPromptLabel={`Tap to play • ${makeAIGreeting(data)}`} />
+      <WishStage data={wish} />
+      <MusicToggle src={musicSrc} autoPromptLabel={`Tap to play • ${makeAIGreeting(wish)}`} />
       <ShareBar url={url} title={title} />
-      <Watermark festival={data.festival} />
+      <Watermark festival={wish.festival} />
     </>
   );
 }
