@@ -49,9 +49,163 @@ function ParticleLayer({ kind }: { kind: string }) {
       return <TricolorLayer />;
     case "sun":
       return <SunLayer />;
+    case "sparkle":
+      return <SparkleLayer />;
+    case "confetti":
+      return <ConfettiLayer />;
+    case "hearts":
+      return <HeartsLayer />;
     default:
       return <StarsLayer />;
   }
+}
+
+function SparkleLayer() {
+  const sparks = useMemo(
+    () =>
+      Array.from({ length: 50 }).map(() => ({
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        size: 2 + Math.random() * 4,
+        delay: Math.random() * 4,
+        dur: 2 + Math.random() * 3,
+      })),
+    [],
+  );
+  return (
+    <>
+      {sparks.map((s, i) => (
+        <span
+          key={i}
+          className="twinkle absolute rounded-full"
+          style={{
+            left: `${s.left}%`,
+            top: `${s.top}%`,
+            width: s.size,
+            height: s.size,
+            background: "radial-gradient(circle, oklch(0.98 0.18 90) 0%, oklch(0.85 0.2 70 / 0.5) 60%, transparent 100%)",
+            boxShadow: "0 0 10px oklch(0.9 0.2 80 / 0.9)",
+            animationDuration: `${s.dur}s`,
+            animationDelay: `${s.delay}s`,
+          }}
+        />
+      ))}
+    </>
+  );
+}
+
+function ConfettiLayer() {
+  const pieces = useMemo(
+    () =>
+      Array.from({ length: 70 }).map(() => ({
+        left: Math.random() * 100,
+        delay: Math.random() * 6,
+        dur: 5 + Math.random() * 6,
+        size: 6 + Math.random() * 8,
+        hue: Math.random() * 360,
+        rot: Math.random() * 360,
+      })),
+    [],
+  );
+  const balloons = useMemo(
+    () =>
+      Array.from({ length: 6 }).map((_, i) => ({
+        left: 8 + i * 15 + Math.random() * 5,
+        delay: Math.random() * 4,
+        dur: 10 + Math.random() * 6,
+        hue: (i * 60 + Math.random() * 30) % 360,
+        size: 36 + Math.random() * 18,
+      })),
+    [],
+  );
+  return (
+    <>
+      {pieces.map((p, i) => (
+        <span
+          key={`c${i}`}
+          className="particle absolute"
+          style={{
+            left: `${p.left}%`,
+            bottom: 0,
+            width: p.size,
+            height: p.size * 0.4,
+            background: `hsl(${p.hue} 90% 60%)`,
+            transform: `rotate(${p.rot}deg)`,
+            animationDuration: `${p.dur}s`,
+            animationDelay: `${p.delay}s`,
+            borderRadius: 2,
+          }}
+        />
+      ))}
+      {balloons.map((b, i) => (
+        <div
+          key={`b${i}`}
+          className="particle absolute"
+          style={{
+            left: `${b.left}%`,
+            bottom: 0,
+            width: b.size,
+            height: b.size * 1.2,
+            animationDuration: `${b.dur}s`,
+            animationDelay: `${b.delay}s`,
+          }}
+        >
+          <div
+            className="rounded-[50%]"
+            style={{
+              width: b.size,
+              height: b.size * 1.15,
+              background: `radial-gradient(circle at 35% 30%, hsl(${b.hue} 95% 80%) 0%, hsl(${b.hue} 85% 55%) 60%, hsl(${b.hue} 70% 40%) 100%)`,
+              boxShadow: `0 6px 20px hsl(${b.hue} 80% 40% / 0.4)`,
+            }}
+          />
+          <div
+            className="mx-auto"
+            style={{
+              width: 1,
+              height: b.size * 0.7,
+              background: "rgba(255,255,255,0.4)",
+            }}
+          />
+        </div>
+      ))}
+    </>
+  );
+}
+
+function HeartsLayer() {
+  const hearts = useMemo(
+    () =>
+      Array.from({ length: 22 }).map(() => ({
+        left: Math.random() * 100,
+        delay: Math.random() * 8,
+        dur: 7 + Math.random() * 6,
+        size: 14 + Math.random() * 18,
+        hue: 340 + Math.random() * 40, // pink → orange
+      })),
+    [],
+  );
+  return (
+    <>
+      {hearts.map((h, i) => (
+        <span
+          key={i}
+          className="particle absolute grid place-items-center"
+          style={{
+            left: `${h.left}%`,
+            bottom: 0,
+            fontSize: h.size,
+            color: `hsl(${h.hue} 85% 70%)`,
+            textShadow: `0 0 10px hsl(${h.hue} 90% 60% / 0.6)`,
+            animationDuration: `${h.dur}s`,
+            animationDelay: `${h.delay}s`,
+          }}
+        >
+          {Math.random() > 0.5 ? "❤️" : "🧡"}
+        </span>
+      ))}
+    </>
+  );
 }
 
 function DiwaliLayer() {

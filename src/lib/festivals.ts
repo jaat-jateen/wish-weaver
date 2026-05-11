@@ -7,7 +7,10 @@ export type FestivalId =
   | "newyear"
   | "morning"
   | "evening"
-  | "night";
+  | "night"
+  | "bestfriend"
+  | "birthday"
+  | "sibling";
 
 export interface FestivalTheme {
   id: FestivalId;
@@ -20,7 +23,21 @@ export interface FestivalTheme {
   /** CSS gradient for background */
   gradient: string;
   accent: string; // hex-ish via oklch
-  particle: "diya" | "color" | "stars" | "snow" | "tricolor" | "fireworks" | "sun" | "warm" | "starry";
+  particle:
+    | "diya"
+    | "color"
+    | "stars"
+    | "snow"
+    | "tricolor"
+    | "fireworks"
+    | "sun"
+    | "warm"
+    | "starry"
+    | "sparkle"
+    | "confetti"
+    | "hearts";
+  /** Default message suggestion shown in the creator. */
+  defaultMessage?: string;
 }
 
 export const FESTIVALS: Record<FestivalId, FestivalTheme> = {
@@ -118,6 +135,45 @@ export const FESTIVALS: Record<FestivalId, FestivalTheme> = {
     gradient: "radial-gradient(ellipse at 50% 30%, oklch(0.25 0.06 270) 0%, oklch(0.1 0.04 270) 80%)",
     accent: "oklch(0.85 0.05 240)",
     particle: "starry",
+  },
+  bestfriend: {
+    id: "bestfriend",
+    name: "Best Friend",
+    emoji: "🤝",
+    greeting: "To My Best Friend",
+    tagline: "Side by side or miles apart — always together at heart.",
+    gradient:
+      "radial-gradient(ellipse at 30% 20%, oklch(0.85 0.18 90) 0%, oklch(0.6 0.18 65) 45%, oklch(0.32 0.1 50) 100%)",
+    accent: "oklch(0.88 0.18 85)",
+    particle: "sparkle",
+    defaultMessage:
+      "Thanks for every laugh, every late-night talk, and every memory. You're my favorite kind of chaos. 🤝✨❤️",
+  },
+  birthday: {
+    id: "birthday",
+    name: "Birthday",
+    emoji: "🎂",
+    greeting: "Happy Birthday",
+    tagline: "Another trip around the sun — make it count!",
+    gradient:
+      "linear-gradient(135deg, oklch(0.78 0.22 350) 0%, oklch(0.78 0.2 50) 50%, oklch(0.7 0.2 200) 100%)",
+    accent: "oklch(0.82 0.2 350)",
+    particle: "confetti",
+    defaultMessage:
+      "Wishing you cake, candles, and a year packed with everything that makes you smile. 🎂🎉🎈",
+  },
+  sibling: {
+    id: "sibling",
+    name: "Brother / Sister",
+    emoji: "❤️",
+    greeting: "For My Sibling",
+    tagline: "My first friend, my forever family.",
+    gradient:
+      "linear-gradient(135deg, oklch(0.85 0.1 350) 0%, oklch(0.78 0.08 320) 45%, oklch(0.7 0.12 240) 100%)",
+    accent: "oklch(0.78 0.15 350)",
+    particle: "hearts",
+    defaultMessage:
+      "From childhood fights to forever friends — so glad I get to share this life with you. ❤️🧡😊",
   },
 };
 
