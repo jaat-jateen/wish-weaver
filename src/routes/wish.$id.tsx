@@ -60,7 +60,7 @@ export const Route = createFileRoute("/wish/$id")({
 });
 
 function WishPage() {
-  const { wish } = Route.useLoaderData();
+  const { wish } = Route.useLoaderData() as { wish: WishData | null };
   const [url, setUrl] = useState("");
 
   useEffect(() => {
